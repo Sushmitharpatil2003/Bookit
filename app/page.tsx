@@ -1,9 +1,4 @@
-import Image from "next/image";
 import AdventureGrid from "./components/Adventure";
-import Header from "./components/Header";
-import CartCard from "./components/Billing";
-import AdventureBookingCard from "./components/BookingCard";
-import CheckOut from "./components/CheckoutForm";
 
 export default function Home() {
   return (

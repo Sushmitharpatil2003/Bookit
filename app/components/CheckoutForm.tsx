@@ -11,77 +11,91 @@ export default function CheckOut() {
   const [promo, setPromo] = useState("");
   const [agree, setAgree] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handlePromoApply = () => {
     if (!agree) {
-      alert("Please agree to the Terms and Safety Policy.");
+      alert("Please agree to the Terms and Safety Policy first.");
       return;
     }
-    console.log("Form Submitted:", { name, email, promo, agree });
+    if (promo.trim() === "") {
+      alert("Please enter a promo code.");
+      return;
+    }
+    console.log("Promo applied:", { name, email, promo });
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-4">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-6 rounded-2xl shadow-md w-full max-w-md space-y-4"
-      >
-        <h2 className="text-2xl font-bold text-gray-800 mb-4 text-center">
+    <div className="min-h-screen">
+      <div className="bg-gray-300 p-8 rounded-2xl shadow-lg w-full max-w-4xl space-y-6">
+        <h2 className="text-3xl font-bold text-gray-800 mb-4 text-center">
           Enter Your Details
         </h2>
 
-        <div className="flex flex-col space-y-1">
-          <label htmlFor="name" className="text-gray-700 font-medium">
-            Name
-          </label>
-          <Input
-            id="name"
-            type="text"
-            placeholder="Your Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="bg-gray-200"
-            required
-          />
+        {/* Name + Email */}
+        <div className="flex flex-col md:flex-row gap-6">
+          <div className="flex flex-col w-full">
+            <label htmlFor="name" className="text-gray-700 font-medium mb-1">
+              Full Name
+            </label>
+            <Input
+              id="name"
+              type="text"
+              placeholder="Enter your full name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="bg-gray-200 text-gray-900 h-[45px] rounded-lg"
+              required
+            />
+          </div>
+
+          <div className="flex flex-col w-full">
+            <label htmlFor="email" className="text-gray-700 font-medium mb-1">
+              Email
+            </label>
+            <Input
+              id="email"
+              type="email"
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="bg-gray-200 text-gray-900 h-[45px] rounded-lg"
+              required
+            />
+          </div>
         </div>
 
-        <div className="flex flex-col space-y-1">
-          <label htmlFor="email" className="text-gray-700 font-medium">
-            Email
-          </label>
-          <Input
-            id="email"
-            type="email"
-            placeholder="Your Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="bg-gray-200"
-            required
-          />
+        {/* Promo + Apply Button */}
+        <div className="flex flex-col md:flex-row gap-4">
+          <div className="flex-1 flex flex-col">
+            <label htmlFor="promo" className="text-gray-700 font-medium mb-1">
+              Promo Code
+            </label>
+            <Input
+              id="promo"
+              type="text"
+              placeholder="Enter Promo Code"
+              value={promo}
+              onChange={(e) => setPromo(e.target.value)}
+              className="bg-gray-200 text-gray-900 h-[45px] rounded-lg"
+            />
+          </div>
+          <Button
+            type="button"
+            onClick={handlePromoApply}
+            className="bg-yellow-400 text-black hover:bg-yellow-300 font-semibold px-8 h-[45px] rounded-lg mt-6 md:mt-auto md:w-auto w-full"
+          >
+            Apply
+          </Button>
         </div>
 
-        <div className="flex flex-col space-y-1">
-          <label htmlFor="promo" className="text-gray-700 font-medium">
-            Promo Code
-          </label>
-          <Input
-            id="promo"
-            type="text"
-            placeholder="Enter Promo Code"
-            value={promo}
-            onChange={(e) => setPromo(e.target.value)}
-            className="bg-gray-200"
-          />
-        </div>
-
-        <div className="flex items-center gap-2">
+        {/* Checkbox */}
+        <div className="flex items-start gap-3 pt-2">
           <Checkbox
             id="agree"
             checked={agree}
             onCheckedChange={(checked) => setAgree(!!checked)}
             required
           />
-          <label htmlFor="agree" className="text-gray-700 text-sm">
+          <label htmlFor="agree" className="text-gray-700 text-sm leading-tight">
             I agree to the{" "}
             <span className="text-blue-600 underline cursor-pointer">
               Terms
@@ -92,15 +106,7 @@ export default function CheckOut() {
             </span>
           </label>
         </div>
-
-        <Button
-          type="submit"
-          className="w-full bg-yellow-400 text-black hover:bg-yellow-300 mt-2"
-          disabled={!agree} // optionally disable until checked
-        >
-          Submit
-        </Button>
-      </form>
+      </div>
     </div>
   );
 }

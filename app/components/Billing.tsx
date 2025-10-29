@@ -31,25 +31,25 @@ export default function CartCard({
   };
 
   return (
-    <Card className="bg-white overflow-hidden rounded-2xl shadow-lg">
-      <CardContent className="space-y-2">
-        <div className="flex justify-between">
+    <Card className="bg-gray-200 overflow-hidden rounded-2xl shadow-lg w-full max-w-md mx-auto">
+      <CardContent className="space-y-2 p-4 sm:p-6">
+        <div className="flex justify-between text-sm sm:text-base">
           <span className="font-medium">Starts at</span>
           <span>₹{startingAmount}</span>
         </div>
 
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center text-sm sm:text-base">
           <span className="font-medium">Quantity</span>
           <div className="flex items-center gap-2">
             <Button
-              className="w-8 h-8 p-0 bg-gray-200 text-black text-lg font-bold"
+              className="w-6 h-6 sm:w-8 sm:h-8 p-0 bg-gray-200 text-black text-base sm:text-lg font-bold"
               onClick={handleDecrease}
             >
               -
             </Button>
-            <span className="text-base font-medium">{quantity}</span>
+            <span className="text-base sm:text-lg font-medium">{quantity}</span>
             <Button
-              className="w-8 h-8 p-0 bg-gray-200 text-black text-lg font-bold"
+              className="w-6 h-6 sm:w-8 sm:h-8 p-0 bg-gray-200 text-black text-base sm:text-lg font-bold"
               onClick={handleIncrease}
             >
               +
@@ -57,26 +57,30 @@ export default function CartCard({
           </div>
         </div>
 
-        <div className="flex justify-between">
+        <div className="flex justify-between text-sm sm:text-base">
           <span className="font-medium">Subtotal</span>
           <span>₹{subtotal}</span>
         </div>
 
-        <div className="flex justify-between">
+        <div className="flex justify-between text-sm sm:text-base">
           <span className="font-medium">Taxes</span>
           <span>₹{taxes}</span>
         </div>
 
         <div className="border-t border-gray-300 my-2" />
 
-        <div className="flex justify-between text-lg font-bold">
+        <div className="flex justify-between text-base sm:text-lg font-bold">
           <span>Total</span>
           <span>₹{total}</span>
         </div>
       </CardContent>
 
       <CardFooter className="pt-2">
-        <Button className="w-full" onClick={handleConfirm} disabled={loading}>
+        <Button
+          className="w-full text-sm sm:text-base"
+          onClick={handleConfirm}
+          disabled={loading}
+        >
           {loading ? "Redirecting..." : "Confirm"}
         </Button>
       </CardFooter>
