@@ -5,9 +5,15 @@ import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import CartCard from "../components/Billing";
+import { useAppContext } from "../AppContext";
+
 
 export default function Home() {
   const router = useRouter();
+  const { adventureId } = useAppContext();
+  const handleCheckoutBack = () => {
+    router.push(`/Details?id=${adventureId}`);
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -15,7 +21,7 @@ export default function Home() {
         <Button
           variant="ghost"
           className="flex items-center gap-2 font-bold"
-          onClick={() => router.push("/Details")}
+          onClick={() => {handleCheckoutBack()}}
         >
           <ArrowLeft /> Checkout
         </Button>
