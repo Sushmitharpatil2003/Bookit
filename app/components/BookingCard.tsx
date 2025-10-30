@@ -8,17 +8,22 @@ import dayjs from "dayjs";
 interface AdventureBookingCardProps {
   image: string;
   adventureName: string;
-  description: string;
+  discription: string;
   about: string;
   unavailableSlots?: string[];
+  slotAvailability?: Record<string, number>; // key: "YYYY-MM-DD-HH:mm", value: available seats
+  capacity?: number; // optional, default 10
 }
+
 
 export default function AdventureBookingCard({
   image,
   adventureName,
-  description,
+  discription,
   about,
   unavailableSlots = [],
+  slotAvailability = {},
+  capacity = 10,
 }: AdventureBookingCardProps) {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
@@ -40,31 +45,34 @@ export default function AdventureBookingCard({
 
   return (
     <div className="w-full max-w-3xl mx-auto overflow-hidden">
-      {/* Image Section */}
+      {/* Image */}
       <div className="relative w-full h-56 sm:h-72 md:h-80">
-        <Image
-          src={image}
-          alt={adventureName}
-          fill
-          className="object-cover rounded-2xl"
-          priority
-        />
+        {image ? (
+          <Image
+            src={image}
+            alt={adventureName}
+            fill
+            className="object-cover rounded-2xl"
+            priority
+          />
+        ) : (
+          <div className="w-full h-full bg-gray-200 flex items-center justify-center rounded-2xl text-gray-500">
+            No Image
+          </div>
+        )}
       </div>
 
-      {/* Content Section */}
+      {/* Content */}
       <div className="p-4 sm:p-6 md:p-8 space-y-4">
-        {/* Title and Description */}
+        {/* Title & Description */}
         <div className="space-y-2 text-sm sm:text-base">
           <div className="flex flex-col sm:flex-row sm:justify-between">
-            <span className="font-semibold text-gray-800 bold text-lg sm:text-xl">
+            <span className="font-semibold text-gray-800 text-lg sm:text-xl">
               {adventureName}
             </span>
           </div>
           <div className="flex flex-col sm:flex-row sm:justify-between">
-            <span className="font-medium text-gray-600">Description:</span>
-            <span className="text-gray-700 text-sm sm:text-base">
-              {description}
-            </span>
+            <span className="text-gray-700 text-sm sm:text-base">{discription}</span>
           </div>
         </div>
 
@@ -100,29 +108,37 @@ export default function AdventureBookingCard({
               const isUnavailable =
                 selectedDate && isSlotUnavailable(selectedDate, time);
               const isSelected = selectedTime === time;
+
+              const key = `${selectedDate}-${time}`;
+              const seatsLeft = slotAvailability[key] ?? capacity;
+
               return (
                 <button
                   key={time}
                   onClick={() => !isUnavailable && setSelectedTime(time)}
                   disabled={!!isUnavailable}
-                  className={`px-3 py-2 rounded-md border text-xs sm:text-sm
+                  className={`px-3 py-2 rounded-md border text-xs sm:text-sm flex flex-col items-center
                     ${
                       isUnavailable
                         ? "bg-red-100 text-red-600 border-red-300 cursor-not-allowed"
                         : isSelected
                         ? "bg-blue-600 text-white border-blue-600"
                         : "bg-gray-200 text-gray-800 border-gray-300"
-                    }
-                  `}
+                    }`}
                 >
-                  {time} {!!isUnavailable && "- No slots left"}
+                  <span>{time}</span>
+                  {seatsLeft < 5 && (
+                    <span className="text-red-600 text-[10px] font-bold">
+                      {seatsLeft} seats left
+                    </span>
+                  )}
                 </button>
               );
             })}
           </div>
         </div>
 
-        {/* About Section */}
+        {/* About */}
         <div>
           <p className="text-gray-700 text-sm sm:text-base">{about}</p>
         </div>
