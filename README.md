@@ -38,37 +38,45 @@ This application is designed to be **modular, scalable, and user-friendly**.
 ## Project Structure
 
 ```
-adventure-booking-system/
-│
-├─ backend/
-│   ├─ server.js              # Express server setup
-│   ├─ routes/
-│   │   ├─ adventures.js      # Routes for fetching adventure data
-│   │   ├─ bookings.js        # Routes for creating bookings
-│   │   └─ promo.js           # Routes for validating promo codes
-│   ├─ controllers/           # Logic for handling API requests
-│   ├─ models/                # Database models for MongoDB
-│
-├─ frontend/
-│   ├─ components/
-│   │   ├─ AdventureCard.tsx
-│   │   ├─ CartCard.tsx
-│   │   └─ CheckoutForm.tsx
-│   ├─ context/
-│   │   └─ AppContext.tsx
-│   ├─ pages/
-│   │   ├─ index.tsx
-│   │   └─ checkout.tsx
-│   ├─ utils/
-│   │   ├─ promoValidator.ts
-│   │   └─ slotUtils.ts
-│   ├─ public/
-│   └─ styles/
-│       └─ globals.css
-│
-├─ package.json
-├─ README.md
-└─ tailwind.config.js
+bookit/
+├── .env
+├── .git/
+├── .gitignore
+├── .next/
+├── app/
+│   ├── AppContext.tsx
+│   ├── Checkout/
+│   ├── components/
+│   ├── Confirmed/
+│   ├── Details/
+│   ├── favicon.ico
+│   ├── globals.css
+│   ├── layout.tsx
+│   └── page.tsx
+├── assets/
+├── backend/
+│   ├── .env
+│   ├── .gitignore
+│   ├── data.js
+│   ├── lib/
+│   ├── node_modules/
+│   ├── package-lock.json
+│   ├── package.json
+│   ├── routes/
+│   └── server.js
+├── components/
+├── components.json
+├── eslint.config.mjs
+├── lib/
+├── next-env.d.ts
+├── next.config.ts
+├── node_modules/
+├── package-lock.json
+├── package.json
+├── postcss.config.mjs
+├── public/
+├── README.md
+└── tsconfig.json
 ```
 
 ---
