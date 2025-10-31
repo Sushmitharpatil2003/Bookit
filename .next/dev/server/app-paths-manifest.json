@@ -1,0 +1,6 @@
+{
+  "/Checkout/page": "app/Checkout/page.js",
+  "/Confirmed/page": "app/Confirmed/page.js",
+  "/Details/page": "app/Details/page.js",
+  "/page": "app/page.js"
+}
