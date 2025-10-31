@@ -44,6 +44,7 @@ export default function AdventureGrid() {
   const handleDetailPush = (id: string) => {
     router.push(`/Details?id=${id}`);
     setAdventureId(id);
+    console.log(adventureId)
   };
 
   if (loading) {

@@ -6,8 +6,8 @@ import { ArrowLeft } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { use, useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-
+import { useAppContext } from "../AppContext";
+import { set } from "react-hook-form";
 interface Slot {
   _id: string;
   adventureId: string;
@@ -33,7 +33,7 @@ export default function Home() {
   const [slots, setSlots] = useState<Slot[]>([]);
   const [adventures, setAdventures] = useState<Adventure[]>([]);
   const router = useRouter();
-
+  const { setAdventureId } = useAppContext();
 
 
   useEffect(() => {
@@ -48,6 +48,7 @@ export default function Home() {
         setAdventures(
           Array.isArray(data.adventure) ? data.adventure : [data.adventure]
         );
+        setAdventureId(experienceId);
       })
       .catch((err) => console.error("Error fetching details:", err));
 
@@ -81,6 +82,7 @@ export default function Home() {
             <CartCard
               startingAmount={adventures[0]?.amount || 4999}
               initialQuantity={1}
+              onCheckout={() => router.push("/Checkout")}
             />
           </div>
         </div>

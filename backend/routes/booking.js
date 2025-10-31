@@ -5,9 +5,9 @@ const { connectToDatabase } = require("../lib/db");
 
 router.post("/", async (req, res) => {
   try {
-    const { slotId, slotDate, slotTime, quantity, subtotal, taxes, total, adventureId } = req.body;
+    const { slotId, slotDate, slotTime, quantity, subtotal, taxes, totalAmount, adventureId, discount = 0, promoCode = "" } = req.body;
 
-    if (!slotId || !slotDate || !slotTime) {
+    if (!slotId || !slotDate || !slotTime || !quantity || !subtotal || !taxes || !totalAmount || !adventureId) {
       return res.status(400).json({ error: "Missing required booking details" });
     }
 
@@ -21,8 +21,10 @@ router.post("/", async (req, res) => {
       quantity,
       subtotal,
       taxes,
-      total,
+      totalAmount,
       adventureId: new ObjectId(adventureId),
+      discount,
+      promoCode,
       createdAt: new Date(),
     });
 
@@ -41,4 +43,6 @@ router.post("/", async (req, res) => {
   }
 });
 
+
 module.exports = router;
+

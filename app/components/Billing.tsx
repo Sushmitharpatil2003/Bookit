@@ -1,77 +1,118 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { useRouter } from "next/navigation";
 import { useAppContext } from "../AppContext";
+import { UseFormReturn } from "react-hook-form";
 
+interface FormValues {
+  name: string;
+  email: string;
+  promo: string;
+  agree: boolean;
+  isValidPromo?: boolean;
+  discount?: number;
+}
 
 interface CartItemProps {
   startingAmount: number;
   initialQuantity?: number;
+  form?: UseFormReturn<FormValues>;
+  onCheckout?: () => void;
 }
 
 export default function CartCard({
   startingAmount,
   initialQuantity = 1,
+  form,
+  onCheckout,
 }: CartItemProps) {
   const [quantity, setQuantity] = useState(initialQuantity);
   const [loading, setLoading] = useState(false);
-  const { slotId,slotDate,slotTime,setSeats,adventureId} = useAppContext();
-  const router = useRouter();
+  const [discount, setDiscount] = useState(0);
 
-  const handleIncrease = () => {setQuantity((q) => q + 1)
-    setSeats(quantity + 1);
-  };
-  const handleDecrease = () => {setQuantity((q) => (q > 1 ? q - 1 : 1))
-    setSeats(quantity > 1 ? quantity - 1 : 1);
-  };
-
+  const { slotId, slotDate, slotTime, setSeats, adventureId, setTotalAmount } =
+    useAppContext();
 
   const subtotal = startingAmount * quantity;
   const taxes = 59;
-  const total = subtotal + taxes;
+  const totalAfterDiscount = subtotal + taxes - discount;
 
-const handleConfirm = async () => {
-  setLoading(true);
+  // Update context when total changes
+  useEffect(() => {
+    setTotalAmount?.(totalAfterDiscount);
+  }, [totalAfterDiscount, setTotalAmount]);
 
-  try {
-    const bookingData = {
-      slotId,
-      slotDate,
-      slotTime,
-      quantity,
-      total,
-      subtotal,
-      taxes,
-      adventureId
-    };
+  // Watch form values
+  const promoCode = form?.watch("promo") || "";
+  const isValidPromo = form?.watch("isValidPromo");
+  const discountFromForm = form?.watch("discount") || 0;
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/bookings`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(bookingData),
-    });
-
-    if (!res.ok) {
-      throw new Error("Failed to create booking");
+  // Apply or remove discount dynamically
+  useEffect(() => {
+    if (!promoCode.trim()) {
+      setDiscount(0);
+      return;
     }
 
-    const result = await res.json();
-    console.log("Booking created:", result);
+    if (isValidPromo) {
+      setDiscount(discountFromForm);
+    } else {
+      setDiscount(0);
+    }
+  }, [promoCode, isValidPromo, discountFromForm]);
 
-    router.push("/Checkout");
-  } catch (error) {
-    console.error("Error creating booking:", error);
-    alert("Something went wrong while booking. Try again!");
-  } finally {
-    setLoading(false);
-  }
-};
+  const handleIncrease = () => {
+    setQuantity((q) => {
+      const newQ = q + 1;
+      setSeats?.(newQ);
+      return newQ;
+    });
+  };
 
+  const handleDecrease = () => {
+    setQuantity((q) => (q > 1 ? q - 1 : 1));
+  };
+
+  const handleConfirm = async () => {
+    setLoading(true);
+    try {
+      // Always create booking — regardless of promo status
+      const bookingData = {
+        slotId,
+        slotDate,
+        slotTime,
+        quantity,
+        subtotal,
+        taxes,
+        totalAmount: totalAfterDiscount,
+        adventureId,
+        promoCode: promoCode || null,
+        discount,
+      };
+
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/bookings`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(bookingData),
+      });
+
+      if (!res.ok) throw new Error("Failed to create booking");
+      const result = await res.json();
+      console.log("Booking created:", result);
+
+      // ✅ Navigate only if NO promo code is entered
+      if (!promoCode.trim()) {
+        onCheckout?.();
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Something went wrong. Try again!");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <Card className="bg-gray-200 overflow-hidden rounded-2xl shadow-lg w-full max-w-md mx-auto">
@@ -84,20 +125,15 @@ const handleConfirm = async () => {
         <div className="flex justify-between items-center text-sm sm:text-base">
           <span className="font-medium">Quantity</span>
           <div className="flex items-center gap-2">
-            <Button
-              className="w-6 h-6 sm:w-8 sm:h-8 p-0 bg-gray-200 text-black text-base sm:text-lg font-bold"
-              onClick={handleDecrease}
-            >
-              -
-            </Button>
-            <span className="text-base sm:text-lg font-medium">{quantity}</span>
-            <Button
-              className="w-6 h-6 sm:w-8 sm:h-8 p-0 bg-gray-200 text-black text-base sm:text-lg font-bold"
-              onClick={handleIncrease}
-            >
-              +
-            </Button>
+            <Button onClick={handleDecrease}>-</Button>
+            <span>{quantity}</span>
+            <Button onClick={handleIncrease}>+</Button>
           </div>
+        </div>
+
+        <div className="flex justify-between text-sm sm:text-base">
+          <span className="font-medium">Time</span>
+          <span>{slotTime}</span>
         </div>
 
         <div className="flex justify-between text-sm sm:text-base">
@@ -110,21 +146,24 @@ const handleConfirm = async () => {
           <span>₹{taxes}</span>
         </div>
 
+        {discount > 0 && (
+          <div className="flex justify-between text-sm sm:text-base text-green-700">
+            <span className="font-medium">Discount</span>
+            <span>-₹{discount}</span>
+          </div>
+        )}
+
         <div className="border-t border-gray-300 my-2" />
 
         <div className="flex justify-between text-base sm:text-lg font-bold">
           <span>Total</span>
-          <span>₹{total}</span>
+          <span>₹{totalAfterDiscount}</span>
         </div>
       </CardContent>
 
       <CardFooter className="pt-2">
-        <Button
-          className="w-full text-sm sm:text-base"
-          onClick={handleConfirm}
-          disabled={loading}
-        >
-          {loading ? "Redirecting..." : "Confirm"}
+        <Button onClick={handleConfirm} disabled={loading}>
+          {loading ? "Processing..." : "Confirm"}
         </Button>
       </CardFooter>
     </Card>

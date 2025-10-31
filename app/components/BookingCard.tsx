@@ -34,7 +34,6 @@ export default function AdventureBookingCard({
   const [unavailableSlots, setUnavailableSlots] = useState<string[]>([]);
   const { setSlotDate, setSlotTime, setSlotId } = useAppContext();
 
-  // Generate dates
   const dates: string[] = [];
   const today = dayjs();
   const maxDate = today.add(2, "month");
@@ -162,7 +161,7 @@ export default function AdventureBookingCard({
                       if (matchingSlot) {
                         setSelectedTime(time);
                         setSlotTime(time);
-                        setSlotId(matchingSlot._id); // <-- ✅ set slot id here
+                        setSlotId(matchingSlot._id); 
                       }
                     }
                   }}

@@ -22,6 +22,10 @@ interface AppContextType {
   setSeats: (quantity: number | undefined) => void;
   slotId?: string;
   setSlotId: (id: string | undefined) => void;
+  totalAmount?: number;
+  setTotalAmount: (amount: number | undefined) => void;
+  bookingId?: string;
+  setBookingId: (id: string | undefined) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -38,6 +42,8 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const [slotTime, setSlotTime] = useState<string | undefined>(undefined);
   const [slotId, setSlotId] = useState<string | undefined>(undefined);
   const [seats, setSeats] = useState<number | undefined>(undefined);
+  const [totalAmount, setTotalAmount] = useState<number | undefined>(undefined);
+  const [bookingId, setBookingId] = useState<string | undefined>(undefined);
 
   return (
     <AppContext.Provider
@@ -56,6 +62,10 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         setSeats,
         slotId,
         setSlotId,
+        totalAmount,
+        setTotalAmount,
+        bookingId,
+        setBookingId,
       }}
     >
       {children}
