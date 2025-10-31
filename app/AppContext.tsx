@@ -8,10 +8,6 @@ interface User {
 }
 
 interface AppContextType {
-  theme: string;
-  setTheme: (theme: string) => void;
-  user: User;
-  setUser: (user: User) => void;
   adventureId: string;
   setAdventureId: (id: string) => void;
   slotDate?: string;
@@ -26,6 +22,8 @@ interface AppContextType {
   setTotalAmount: (amount: number | undefined) => void;
   bookingId?: string;
   setBookingId: (id: string | undefined) => void;
+  searchItem?: string;
+  setSearchItem: (adventure: string | undefined) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -35,8 +33,6 @@ interface AppProviderProps {
 }
 
 export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
-  const [theme, setTheme] = useState<string>("light");
-  const [user, setUser] = useState<User>({ name: "Guest", age: 20 });
   const [adventureId, setAdventureId] = useState("");
   const [slotDate, setSlotDate] = useState<string | undefined>(undefined);
   const [slotTime, setSlotTime] = useState<string | undefined>(undefined);
@@ -44,14 +40,11 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const [seats, setSeats] = useState<number | undefined>(undefined);
   const [totalAmount, setTotalAmount] = useState<number | undefined>(undefined);
   const [bookingId, setBookingId] = useState<string | undefined>(undefined);
+  const [searchItem, setSearchItem] = useState<string | undefined>("");
 
   return (
     <AppContext.Provider
       value={{
-        theme,
-        setTheme,
-        user,
-        setUser,
         adventureId,
         setAdventureId,
         slotDate,
@@ -66,6 +59,8 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         setTotalAmount,
         bookingId,
         setBookingId,
+        setSearchItem,
+        searchItem
       }}
     >
       {children}

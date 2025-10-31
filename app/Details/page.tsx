@@ -7,7 +7,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { use, useEffect, useState } from "react";
 import { useAppContext } from "../AppContext";
-import { set } from "react-hook-form";
 interface Slot {
   _id: string;
   adventureId: string;
@@ -83,6 +82,7 @@ export default function Home() {
               startingAmount={adventures[0]?.amount || 4999}
               initialQuantity={1}
               onCheckout={() => router.push("/Checkout")}
+              steps="slot"
             />
           </div>
         </div>

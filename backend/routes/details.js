@@ -24,7 +24,6 @@ const getDetails = async (req, res) => {
     if (!adventure) {
       return res.status(404).send({ error: "Adventure not found" });
     }
-    console.log(slots, adventure);
     res.send({slots, adventure});
   } catch (error) {
     console.error(error);

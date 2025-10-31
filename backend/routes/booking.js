@@ -33,6 +33,7 @@ router.post("/", async (req, res) => {
       { $inc: { availableSeats: -quantity } }
     );
 
+
     res.status(201).json({
       message: "Booking created successfully",
       bookingId: result.insertedId,

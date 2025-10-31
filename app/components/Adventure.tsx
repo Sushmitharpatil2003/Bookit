@@ -7,22 +7,28 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useAppContext } from "../AppContext";
 import { set } from "react-hook-form";
-// 1️⃣ Define your data type
 interface Adventure {
   _id: string;
   adventure: string;
   places: string;
   amount: number;
   imageUrl: string;
-  discription?: string; // optional if backend doesn’t always send it
+  discription?: string; 
 }
-
 export default function AdventureGrid() {
   const router = useRouter();
   const [adventures, setAdventures] = useState<Adventure[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const { adventureId, setAdventureId } = useAppContext();
+  const { adventureId, setAdventureId, searchItem } = useAppContext();
+
+const filteredAdventures =
+  searchItem && searchItem.trim() !== ""
+    ? adventures.filter((adv) =>
+        adv.adventure.toLowerCase().includes(searchItem.toLowerCase())
+      )
+    : adventures;
+
 
   useEffect(() => {
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/adventures`)
@@ -44,7 +50,6 @@ export default function AdventureGrid() {
   const handleDetailPush = (id: string) => {
     router.push(`/Details?id=${id}`);
     setAdventureId(id);
-    console.log(adventureId)
   };
 
   if (loading) {
@@ -57,12 +62,8 @@ export default function AdventureGrid() {
 
   return (
     <div className="min-h-screen bg-gray-100 py-10 px-6">
-      <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">
-        Adventure Packages
-      </h1>
-
       <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {adventures.map((adv) => (
+        {filteredAdventures.map((adv) => (
           <Card
             key={adv._id}
             className="overflow-hidden rounded-2xl shadow-md bg-white hover:shadow-lg transition-shadow duration-300"

@@ -13,19 +13,16 @@ router.post("/", async (req, res) => {
     const db = await connectToDatabase();
     const promocodes = db.collection("promocodes");
 
-    // Find promo code document
     const promoDoc = await promocodes.findOne({ code: promo });
 
     if (!promoDoc) {
       return res.status(400).json({ error: "Invalid promo code" });
     }
 
-    console.log("Promocode validated:", promoDoc);
-    // Optionally, you can include discount value if you store it
     res.status(200).json({
       isValid: true,
       message: "Promo code is valid",
-      discount: promoDoc.discountAmount || 0, // optional
+      discount: promoDoc.discountAmount || 0, 
     });
   } catch (error) {
     console.error("Promocode error:", error);

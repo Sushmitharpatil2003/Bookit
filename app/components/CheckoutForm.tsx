@@ -13,6 +13,7 @@ interface FormValues {
   agree: boolean;
   isValidPromo?: boolean;
   discount?: number;
+  isFinalCheckout?:boolean
 }
 
 interface CheckOutFormProps {
@@ -21,7 +22,6 @@ interface CheckOutFormProps {
 }
 
 export default function CheckOutForm({ form, onSubmit }: CheckOutFormProps) {
-  // Destructure what we need from the form object
   const { register, handleSubmit, control, watch } = form;
   const agree = watch("agree");
 
@@ -46,7 +46,6 @@ export default function CheckOutForm({ form, onSubmit }: CheckOutFormProps) {
         }
       );
       const result = await res.json();
-      console.log("result", result);
       form.setValue("isValidPromo", result.isValid);
       form.setValue("discount", result.discount || 0);
     } catch (error) {
@@ -58,13 +57,12 @@ export default function CheckOutForm({ form, onSubmit }: CheckOutFormProps) {
 
   return (
     <form>
-      <div className="min-h-screen flex justify-center items-center">
+      <div className="flex justify-center items-center">
         <div className="bg-gray-300 p-8 rounded-2xl shadow-lg w-full max-w-4xl space-y-6">
           <h2 className="text-3xl font-bold text-gray-800 mb-4 text-center">
             Enter Your Details
           </h2>
 
-          {/* Name + Email */}
           <div className="flex flex-col md:flex-row gap-6">
             <div className="flex flex-col w-full">
               <label htmlFor="name" className="text-gray-700 font-medium mb-1">
@@ -92,7 +90,6 @@ export default function CheckOutForm({ form, onSubmit }: CheckOutFormProps) {
             </div>
           </div>
 
-          {/* Promo + Apply Button */}
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1 flex flex-col">
               <label htmlFor="promo" className="text-gray-700 font-medium mb-1">
@@ -108,13 +105,12 @@ export default function CheckOutForm({ form, onSubmit }: CheckOutFormProps) {
             <Button
               type="button"
               onClick={handleSubmit(handleApply)}
-              className="bg-yellow-400 text-black hover:bg-yellow-300 font-semibold px-8 h-[45px] rounded-lg mt-6 md:mt-auto md:w-auto w-full"
+              className="bg-black text-white hover:bg-black-300 font-semibold px-8 h-[45px] rounded-lg mt-6 md:mt-auto md:w-auto w-full"
             >
               Apply
             </Button>
           </div>
 
-          {/* Checkbox */}
           <div className="flex items-start gap-3 pt-2">
             <Controller
               control={control}
@@ -124,6 +120,7 @@ export default function CheckOutForm({ form, onSubmit }: CheckOutFormProps) {
                   id="agree"
                   checked={field.value}
                   onCheckedChange={field.onChange}
+                  className="border-black"
                 />
               )}
             />

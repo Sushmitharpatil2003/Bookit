@@ -8,6 +8,7 @@ import CartCard from "../components/Billing";
 import { useAppContext } from "../AppContext";
 import { useForm } from "react-hook-form";
 
+
 interface FormValues {
   name: string;
   email: string;
@@ -19,6 +20,8 @@ interface FormValues {
 
 export default function Home() {
   const router = useRouter();
+
+
   const { adventureId } = useAppContext();
   const handleCheckoutBack = () => {
     router.push(`/Details?id=${adventureId}`);
@@ -35,11 +38,9 @@ export default function Home() {
     },
   });
   const onSubmit = (data: FormValues) => {
-    console.log("Form submitted from page.tsx:", data);
 
     const promoCode = form?.watch("promo") || "";
 
-    // call your backend here
   };
   return (
     <div className="min-h-screen flex flex-col">
@@ -66,7 +67,12 @@ export default function Home() {
         {/* Cart Section */}
         <div className="w-full md:w-1/3 p-4 md:p-0 flex justify-center">
           <div className="w-full max-w-md h-auto md:h-[80vh]">
-            <CartCard startingAmount={4999} initialQuantity={1} form={form} />
+            <CartCard
+              startingAmount={4999}
+              initialQuantity={1}
+              form={form}
+              onCheckout={() => router.push("/Confirmed")}
+            />
           </div>
         </div>
       </div>

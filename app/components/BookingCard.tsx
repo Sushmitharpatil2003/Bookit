@@ -5,7 +5,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import dayjs from "dayjs";
 import { useAppContext } from "../AppContext";
-import { set } from "react-hook-form";
+
 interface AdventureBookingCardProps {
   image: string;
   adventureName: string;
@@ -32,7 +32,7 @@ export default function AdventureBookingCard({
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [unavailableSlots, setUnavailableSlots] = useState<string[]>([]);
-  const { setSlotDate, setSlotTime, setSlotId } = useAppContext();
+  const { setSlotDate, setSlotTime, setSlotId,slotId} = useAppContext();
 
   const dates: string[] = [];
   const today = dayjs();
@@ -44,10 +44,18 @@ export default function AdventureBookingCard({
     current = current.add(1, "day");
   }
 
+  const toIST = (time: string) =>
+    new Date(time).toLocaleTimeString("en-IN", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+      timeZone: "Asia/Kolkata",
+    });
+
   useEffect(() => {
     const unavailable = slots
       .filter((s) => s.availableSeats <= 0)
-      .map((s) => `${s.date}-${new Date(s.time).toISOString().slice(11, 16)}`);
+      .map((s) => `${s.date}-${toIST(s.time)}`);
     setUnavailableSlots(unavailable);
   }, [slots]);
 
@@ -56,26 +64,23 @@ export default function AdventureBookingCard({
 
   const slotTimesById: Record<string, string> = {};
   slots.forEach((slot) => {
-    slotTimesById[slot._id] = `${slot.date} ${new Date(slot.time)
-      .toISOString()
-      .slice(11, 16)}`;
+    slotTimesById[slot._id] = `${slot.date} ${toIST(slot.time)}`;
   });
 
   const timeSlots: string[] = Array.from(
     new Set(
       slots
         .filter((s) => (selectedDate ? s.date === selectedDate : true))
-        .map((s) => new Date(s.time).toISOString().slice(11, 16))
+        .map((s) => toIST(s.time))
     )
   ).sort();
 
   const slotAvailability: Record<string, number> = {};
   slots.forEach((slot) => {
-    const key = `${slot.date}-${new Date(slot.time)
-      .toISOString()
-      .slice(11, 16)}`;
+    const key = `${slot.date}-${toIST(slot.time)}`;
     slotAvailability[key] = slot.availableSeats;
   });
+
   const capacity = slots.length > 0 ? slots[0].capacity : 0;
 
   return (
@@ -117,17 +122,18 @@ export default function AdventureBookingCard({
               const isSelected = selectedDate === date;
               return (
                 <Button
+                variant="custom"
                   key={date}
                   onClick={() => {
                     setSelectedDate(date);
                     setSlotDate(date);
+                    setSelectedTime(null); 
                   }}
-                  className={`flex-shrink-0 px-3 py-2 rounded-md border text-xs sm:text-sm
-                    ${
-                      isSelected
-                        ? "bg-blue-600 text-white border-blue-600"
-                        : "bg-gray-200 text-gray-800 border-gray-300"
-                    }`}
+                  className={`flex-shrink-0 px-3 py-2 rounded-md border text-xs sm:text-sm ${
+                    isSelected
+                      ? "custom"
+                      : "bg-gray-200 text-gray-800 border-gray-300"
+                  }`}
                 >
                   {dayjs(date).format("DD MMM")}
                 </Button>
@@ -149,28 +155,28 @@ export default function AdventureBookingCard({
 
               return (
                 <Button
+                  variant="custom"
                   key={time}
                   onClick={() => {
                     if (!isUnavailable && selectedDate) {
                       const matchingSlot = slots.find(
-                        (s) =>
-                          s.date === selectedDate &&
-                          new Date(s.time).toISOString().slice(11, 16) === time
+                        (s) => s.date === selectedDate && toIST(s.time) === time
                       );
 
                       if (matchingSlot) {
                         setSelectedTime(time);
                         setSlotTime(time);
-                        setSlotId(matchingSlot._id); 
+                        setSlotId(matchingSlot._id);
                       }
+
                     }
                   }}
                   disabled={!!isUnavailable}
-                  className={`px-3 py-2 rounded-md border text-xs sm:text-sm flex flex-col items-center${
+                  className={`px-3 py-2 rounded-md border text-xs sm:text-sm flex items-center gap-2 ${
                     isUnavailable
                       ? "bg-red-100 text-red-600 border-red-300 cursor-not-allowed"
                       : isSelected
-                      ? "bg-blue-600 text-white border-blue-600"
+                      ? "custom"
                       : "bg-gray-200 text-gray-800 border-gray-300"
                   }`}
                 >
@@ -186,7 +192,6 @@ export default function AdventureBookingCard({
           </div>
         </div>
 
-        {/* About */}
         <div>
           <p className="text-gray-700 text-sm sm:text-base">{about}</p>
         </div>
