@@ -1,36 +1,167 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Getting Started
 
-First, run the development server:
+# Adventure Booking System
+
+## Overview
+
+The **Adventure Booking System** is a full-stack web application that allows users to browse adventure experiences, select available slots, apply promotional codes, and complete bookings seamlessly. The system uses **Next.js/React** for the frontend and **Express.js** for the backend to handle bookings, slot management, and promo code validation.
+
+This application is designed to be **modular, scalable, and user-friendly**.
+
+---
+
+## Features
+
+* **Browse Adventures:** Users can view adventure experiences with images, descriptions, and details.
+* **Dynamic Slot Selection:** Adventure slots are dynamically fetched from the backend.
+* **Promo Code Validation:** Apply promo codes at checkout with real-time validation from the backend.
+* **Form Validation:** Checkout forms use `react-hook-form` with validations for name, email, and agreement checkbox.
+* **Responsive UI:** Works seamlessly on desktop and mobile devices.
+* **Seamless Checkout:** Total amount is dynamically calculated, and validated bookings are sent to the backend.
+* **API-driven Backend:** Express.js backend handles slot availability, bookings, and promo code verification.
+* **State Management:** Global state using React Context API.
+
+---
+
+## Tech Stack
+
+* **Frontend:** Next.js, React, React Hook Form, Tailwind CSS
+* **Backend:** Node.js, Express.js
+* **Database:** MongoDB 
+* **State Management:** React Context API
+* **UI Components:** Shadcn/ui, React Hot Toast for notifications
+* **Date Handling:** Day.js
+* **Routing:** Next.js `useRouter`
+
+---
+
+## Project Structure
+
+```
+adventure-booking-system/
+│
+├─ backend/
+│   ├─ server.js              # Express server setup
+│   ├─ routes/
+│   │   ├─ adventures.js      # Routes for fetching adventure data
+│   │   ├─ bookings.js        # Routes for creating bookings
+│   │   └─ promo.js           # Routes for validating promo codes
+│   ├─ controllers/           # Logic for handling API requests
+│   ├─ models/                # Database models for MongoDB
+│
+├─ frontend/
+│   ├─ components/
+│   │   ├─ AdventureCard.tsx
+│   │   ├─ CartCard.tsx
+│   │   └─ CheckoutForm.tsx
+│   ├─ context/
+│   │   └─ AppContext.tsx
+│   ├─ pages/
+│   │   ├─ index.tsx
+│   │   └─ checkout.tsx
+│   ├─ utils/
+│   │   ├─ promoValidator.ts
+│   │   └─ slotUtils.ts
+│   ├─ public/
+│   └─ styles/
+│       └─ globals.css
+│
+├─ package.json
+├─ README.md
+└─ tailwind.config.js
+```
+
+---
+
+## Installation
+
+### Backend Setup (Express)
+
+1. Navigate to the backend folder:
+
+```bash
+cd backend
+```
+
+2. Install dependencies:
+
+```bash
+npm install express mongoose cors dotenv
+```
+
+3. Create a `.env` file:
+
+```
+PORT=5000
+MONGO_URI=your_mongodb_connection_string
+```
+
+4. Start the server:
+
+```bash
+node server.js
+```
+
+The Express backend will run on `http://localhost:5000`.
+
+---
+
+### Frontend Setup (Next.js)
+
+1. Navigate to the frontend folder:
+
+```bash
+cd frontend
+```
+
+2. Install dependencies:
+
+```bash
+npm install
+```
+
+3. Run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The frontend will run on `http://localhost:3000` and communicate with the Express backend.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## API Endpoints
 
-## Learn More
+* **GET /api/adventures** – Fetch all adventure experiences
+* **POST /api/bookings** – Create a new booking
+* **POST /api/promo/validate** – Validate a promo code and return discount details
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Usage
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. Open the homepage (`/`) to browse adventures.
+2. Select an adventure to view available slots fetched from the backend.
+3. Fill in **name, email, and promo code** at checkout.
+4. Select a slot date and time.
+5. Click **Checkout** to send booking data to the backend.
+6. On successful booking, a confirmation is displayed.
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Promo Code Validation
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+* Promo codes are validated via an **Express API endpoint**.
+* If valid, the discount is applied automatically to the total amount.
+---
+
+## Future Improvements
+
+* Add **user authentication** for booking history.
+* Admin panel for managing adventures, slots, and promo codes.
+* Email or SMS notifications on successful booking.
+* Dynamic pricing based on seasonality or demand.
+* Integration with payment gateways for real-time payments.
+
+
+Do you want me to do that next?
