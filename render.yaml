@@ -3,8 +3,9 @@ services:
     name: bookit-backend
     env: node
     plan: free
+    rootDir: backend
     buildCommand: "npm install"
-    startCommand: "node server.js"
+    startCommand: "npm start"
     autoDeploy: true
     envVars:
       - key: NODE_ENV
