@@ -12,3 +12,7 @@ services:
         value: production
       - key: PORT
         value: 10000
+      - key: MONGODB_URL
+        sync: false
+      - key: DB_NAME
+        sync: bookit
